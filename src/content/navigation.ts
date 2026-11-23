@@ -7,7 +7,8 @@ import { videosPublished } from "./videos";
 export const navLinks = [
   { label: "Work", href: "/#work" },
   { label: "Projects", href: "/projects" },
-  { label: "About", href: "/#about" },
   { label: "Services", href: "/#services" },
+  { label: "Process", href: "/#process" },
+  { label: "About", href: "/#about" },
   ...(videosPublished ? [{ label: "Videos", href: "/#videos" }] : []),
 ];

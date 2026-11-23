@@ -3,26 +3,22 @@
  * Each visual is a small scene of two cards: the main view and one overlapping card.
  */
 import {
-  BookOpen,
   Bot,
   BrainCircuit,
+  CalendarCheck,
   CirclePlay,
   FileText,
-  Flame,
   GitMerge,
-  KeyRound,
+  Inbox,
   LayoutDashboard,
-  LayoutGrid,
   ListChecks,
+  Mail,
+  MailSearch,
   MessagesSquare,
-  Palette,
+  PenLine,
   Repeat,
-  Server,
   Sheet,
   ShieldCheck,
-  Sparkles,
-  Trophy,
-  UserRound,
   Users,
   Workflow,
   Zap,
@@ -42,6 +38,15 @@ export type StudentSupportVisual = {
     /** Most-asked topics, largest first. */
     topics: { label: string; count: number }[];
   };
+};
+
+/** Email RAG: staff ask about a case and get an answer from past emails, plus a draft reply. */
+export type EmailAssistantVisual = {
+  kind: "email-assistant";
+  title: string;
+  question: string;
+  answer: { text: string; sources: { icon: LucideIcon; label: string }[] };
+  draft: { label: string; booking: string; lines: string[] };
 };
 
 /** Finance: a payment notification and the invoice it became. */
@@ -92,7 +97,7 @@ export type CaseStudy = {
   built: BuiltItem[];
   /** Shown as a caption on the visual. */
   stack: string[];
-  visual: StudentSupportVisual | PaymentToInvoiceVisual | CommunityHubVisual;
+  visual: StudentSupportVisual | EmailAssistantVisual | PaymentToInvoiceVisual | CommunityHubVisual;
   /** Only set once a real case study exists. */
   caseStudyUrl?: string;
 };
@@ -101,7 +106,7 @@ export const workHeading = {
   eyebrow: "Selected work",
   title: "Recent projects.",
   intro:
-    "A few recent builds, not everything I've worked on. Picked to show the range: AI agents, finance automation and a full web platform.",
+    "Not everything I've built, just three that show the range: AI agents that run support for course businesses, 15 years of email turned into answers, and books that update themselves.",
   /** Link to /projects, which lists this year's work only (not every project ever). */
   allProjectsLabel: "More from this year",
 };
@@ -117,7 +122,7 @@ export const caseStudies: CaseStudy[] = [
     highlights: [
       { icon: Bot, value: "15", label: "production AI agents" },
       { icon: Users, value: "1,000s", label: "of real users" },
-      { icon: Repeat, label: "Run on a monthly retainer" },
+      { icon: Repeat, label: "Every client on a monthly retainer" },
     ],
     built: [
       { icon: Workflow, label: "Data pipelines" },
@@ -146,6 +151,46 @@ export const caseStudies: CaseStudy[] = [
           { label: "Pricing your offer", count: 312 },
           { label: "Finding first clients", count: 241 },
           { label: "Ad account setup", count: 167 },
+        ],
+      },
+    },
+  },
+  {
+    name: "Email RAG agent",
+    role: "Client · rental business",
+    tone: "violet",
+    title: "15 years of email. Answers in seconds.",
+    summary:
+      "A rental company's know-how was buried in 15+ years of email. Now staff ask a question and get an answer from past cases, or a draft reply to finish and send.",
+    highlights: [
+      { icon: MailSearch, value: "15+ years", label: "of email, searchable" },
+      { icon: CalendarCheck, label: "Live booking status" },
+      { icon: PenLine, label: "Drafts, sent by staff" },
+    ],
+    built: [
+      { icon: Inbox, label: "Email ingestion" },
+      { icon: BrainCircuit, label: "RAG agent" },
+      { icon: CalendarCheck, label: "Booking API link" },
+      { icon: PenLine, label: "Reply drafts" },
+    ],
+    stack: ["RAG", "Claude", "PostgreSQL"],
+    visual: {
+      kind: "email-assistant",
+      title: "Ask the inbox",
+      question: "Customer says the unit arrived damaged. How did we handle this last time?",
+      answer: {
+        text: "Two similar cases, in 2021 and 2023. Both times we asked for photos within 48 hours, then offered a partial refund or a swap.",
+        sources: [
+          { icon: Mail, label: "Re: Damaged on arrival · 2023" },
+          { icon: Mail, label: "Re: Unit condition · 2021" },
+        ],
+      },
+      draft: {
+        label: "Draft",
+        booking: "#4821",
+        lines: [
+          "Sorry to hear the unit arrived damaged.",
+          "Could you send a few photos? We'll sort a swap or refund today.",
         ],
       },
     },
@@ -187,64 +232,6 @@ export const caseStudies: CaseStudy[] = [
         total: "$1,150.00",
         status: "Paid",
       },
-    },
-  },
-  {
-    name: "AllMinecraft.net",
-    role: "Solo build",
-    tone: "violet",
-    title: "A community hub, built and run solo.",
-    summary:
-      "A content hub where players share and find mods, shaders, servers and guides, with accounts, ranks and leaderboards. I built every part of it and run the hosting.",
-    highlights: [
-      { icon: UserRound, value: "1,203", label: "registered accounts" },
-      { icon: LayoutGrid, value: "13", label: "content categories" },
-    ],
-    built: [
-      { icon: KeyRound, label: "Accounts & ranks" },
-      { icon: Trophy, label: "Leaderboards" },
-      { icon: Flame, label: "Trending feeds" },
-      { icon: Server, label: "Self-hosted" },
-    ],
-    stack: ["Next.js", "Docker", "Coolify"],
-    visual: {
-      kind: "community-hub",
-      tabs: ["New", "Trending", "Featured"],
-      activeTab: 1,
-      posts: [
-        {
-          title: "Low-end shader setup",
-          category: "Shader Packs",
-          icon: Sparkles,
-          version: "MC 1.21.1",
-          author: "aster",
-          views: "4.3K",
-          comments: 12,
-        },
-        {
-          title: "32x night texture pack",
-          category: "Texture Packs",
-          icon: Palette,
-          version: "MC 1.21.4",
-          author: "pip",
-          views: "1.2K",
-          comments: 7,
-        },
-        {
-          title: "Fabric server setup guide",
-          category: "Guides",
-          icon: BookOpen,
-          version: "MC 1.21.1",
-          author: "moss",
-          views: "318",
-          comments: 4,
-        },
-      ],
-      leaders: [
-        { name: "aster", points: "9,840" },
-        { name: "moss", points: "7,215" },
-        { name: "pip", points: "5,602" },
-      ],
     },
   },
 ];

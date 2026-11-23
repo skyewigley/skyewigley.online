@@ -88,6 +88,14 @@
   --color-tone-rose: #fb7185;
 }
 
+/* Brand colours for links to other platforms (footer socials). Dark-mode variants where the brand
+   has one, so they stay readable on the ink background: LinkedIn's dark-mode blue, GitHub's white mark. */
+@theme {
+  --color-brand-linkedin: #71b7fb;
+  --color-brand-github: #fafafa;
+  --color-brand-youtube: #ff0033;
+}
+
 /* Fonts are loaded by next/font in src/app/layout.tsx as CSS variables. */
 @theme inline {
   --font-sans: var(--font-inter), system-ui, sans-serif;
@@ -139,6 +147,13 @@
 @utility grain {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 1 0 0 0 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size: 180px 180px;
+}
+
+/* Topographic contour lines (public/textures/contour.svg, one seamless 640px tile), used as a
+   slow-moving texture. */
+@utility contour {
+  background-image: url("/textures/contour.svg");
+  background-size: 640px 640px;
 }
 
 /* Staggered delays for the hero entrance animation. */
@@ -197,6 +212,17 @@
     animation: flow-packet var(--cycle) ease-in-out infinite;
     animation-delay: var(--delay);
   }
+  /* Phone version: instead of a packet, each rail segment fills top to bottom. */
+  .flow-rail {
+    position: absolute;
+    inset: 0;
+    background: var(--color-accent);
+    box-shadow: 0 0 6px color-mix(in srgb, var(--color-accent) 55%, transparent);
+    transform-origin: top;
+    transform: scaleY(0);
+    animation: flow-rail var(--cycle) ease-in-out infinite;
+    animation-delay: var(--delay);
+  }
   /* Invisible metronome: its iteration event marks the end of each pass, so
      the diagram only rotates between passes, never mid-animation. */
   .flow-clock {
@@ -222,9 +248,64 @@
   .about-drift-alt {
     animation: about-drift 32s ease-in-out infinite alternate-reverse;
   }
+  /* Contact: the contour texture pans by exactly one tile, so the loop is seamless. */
+  .contour-drift {
+    animation: contour-drift 240s linear infinite;
+  }
+  /* Contact: a short accent glint travelling round the panel's border. A large conic gradient
+     spins behind the panel; the panel's 1px frame is the only place it shows through. */
+  .border-trace {
+    background: conic-gradient(
+      transparent 0 78%,
+      color-mix(in srgb, var(--color-accent) 55%, transparent) 90%,
+      transparent 100%
+    );
+    animation: border-trace 9s linear infinite;
+  }
   /* About: the project row. Moves by one copy of the list (-50%), so the loop is seamless. */
   .project-marquee {
     animation: project-marquee 90s linear infinite;
+  }
+
+  /* How I work: every step shares one loop (--cycle, set on .process). Each element sets --d to
+     when its step (plus its own offset) begins, so the spotlight moves along the track in turn.
+     A scene builds on its turn, stays built, and resets just before its turn comes round again. */
+  .process-in {
+    animation: process-in var(--cycle) ease both infinite;
+    animation-delay: var(--d);
+  }
+  .process-bar {
+    animation: process-bar var(--cycle) ease-in-out both infinite;
+    animation-delay: var(--d);
+  }
+  /* A short, snappy fade-in for long staggered rows (uptime bars): each item lands almost at once,
+     so the row fills as one steady sweep instead of a long half-faded gradient. */
+  .process-tick {
+    animation: process-tick var(--cycle) linear both infinite;
+    animation-delay: var(--d);
+  }
+  .process-node {
+    animation: process-node var(--cycle) ease both infinite;
+    animation-delay: var(--d);
+  }
+  /* The track to the next node: --fill-0 is its empty scale ("1 0" down, "0 1" across). */
+  .process-fill {
+    animation: process-fill var(--cycle) ease-in-out both infinite;
+    animation-delay: var(--d);
+  }
+  /* The Monitoring "Live" dot: a few pulses during its own step only, quiet the rest of the loop. */
+  .process-pulse {
+    animation: process-pulse var(--cycle) ease-out both infinite;
+    animation-delay: var(--d);
+  }
+  /* Below lg: the border glint round the spotlit step's card, shown only during its own step. */
+  .process-spot {
+    animation: process-spot var(--cycle) ease both infinite;
+    animation-delay: var(--d);
+  }
+  /* Held on its first frame until the section scrolls into view (PlayInView). */
+  .process:not([data-playing]) .process-anim {
+    animation-play-state: paused !important;
   }
 }
 
@@ -255,6 +336,31 @@
     opacity: 0;
   }
 }
+@keyframes flow-rail {
+  0% {
+    transform: scaleY(0);
+    opacity: 1;
+  }
+  12% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+  20%,
+  100% {
+    transform: scaleY(1);
+    opacity: 0;
+  }
+}
+@keyframes border-trace {
+  to {
+    rotate: 360deg;
+  }
+}
+@keyframes contour-drift {
+  to {
+    transform: translate(640px, 640px);
+  }
+}
 @keyframes project-marquee {
   to {
     transform: translateX(-50%);
@@ -263,6 +369,116 @@
 @keyframes about-drift {
   to {
     transform: translate(-6%, 8%) scale(1.12);
+  }
+}
+@keyframes process-in {
+  0% {
+    opacity: 0;
+    translate: 0 6px;
+  }
+  5%,
+  94% {
+    opacity: 1;
+    translate: 0 0;
+  }
+  100% {
+    opacity: 0;
+    translate: 0 0;
+  }
+}
+@keyframes process-bar {
+  0% {
+    scale: 0 1;
+    opacity: 1;
+  }
+  18%,
+  94% {
+    scale: 1 1;
+    opacity: 1;
+  }
+  100% {
+    scale: 1 1;
+    opacity: 0;
+  }
+}
+@keyframes process-tick {
+  0% {
+    opacity: 0;
+  }
+  1.5%,
+  94% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes process-fill {
+  0%,
+  4% {
+    scale: var(--fill-0);
+    opacity: 1;
+  }
+  24%,
+  94% {
+    scale: 1 1;
+    opacity: 1;
+  }
+  100% {
+    scale: 1 1;
+    opacity: 0;
+  }
+}
+/* Three pulses across one step (a quarter of the loop), then still until its turn comes round. */
+@keyframes process-pulse {
+  0%,
+  8.33%,
+  16.67% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-accent) 60%, transparent);
+  }
+  8.32%,
+  16.66%,
+  25%,
+  100% {
+    box-shadow: 0 0 0 7px transparent;
+  }
+}
+/* Fades in at the start of its step (a quarter of the loop) and out as the next one takes over. */
+@keyframes process-spot {
+  0% {
+    opacity: 0;
+  }
+  3%,
+  23% {
+    opacity: 1;
+  }
+  27%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes process-node {
+  0% {
+    border-color: var(--color-edge);
+    color: var(--color-muted);
+    box-shadow: 0 0 0 0 transparent;
+  }
+  4%,
+  20% {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+    box-shadow: 0 0 0 7px color-mix(in srgb, var(--color-accent) 16%, transparent);
+  }
+  27%,
+  94% {
+    border-color: var(--color-accent);
+    color: var(--color-fg);
+    box-shadow: 0 0 0 0 transparent;
+  }
+  100% {
+    border-color: var(--color-edge);
+    color: var(--color-muted);
+    box-shadow: 0 0 0 0 transparent;
   }
 }
 @keyframes flow-clock {
@@ -304,6 +520,10 @@
     animation: flow-packet var(--cycle) ease-in-out infinite !important;
     animation-delay: var(--delay) !important;
   }
+  .flow-rail {
+    animation: flow-rail var(--cycle) ease-in-out infinite !important;
+    animation-delay: var(--delay) !important;
+  }
   .flow-clock {
     animation: flow-clock var(--cycle) linear infinite !important;
   }
@@ -320,5 +540,34 @@
   /* The project row is a slow, constant drift, so it stays on too. */
   .project-marquee {
     animation: project-marquee 90s linear infinite !important;
+  }
+  /* How I work: small, contained and the point of the section, like the workflow diagram. */
+  .process-in {
+    animation: process-in var(--cycle) ease both infinite !important;
+    animation-delay: var(--d) !important;
+  }
+  .process-bar {
+    animation: process-bar var(--cycle) ease-in-out both infinite !important;
+    animation-delay: var(--d) !important;
+  }
+  .process-tick {
+    animation: process-tick var(--cycle) linear both infinite !important;
+    animation-delay: var(--d) !important;
+  }
+  .process-node {
+    animation: process-node var(--cycle) ease both infinite !important;
+    animation-delay: var(--d) !important;
+  }
+  .process-fill {
+    animation: process-fill var(--cycle) ease-in-out both infinite !important;
+    animation-delay: var(--d) !important;
+  }
+  .process-pulse {
+    animation: process-pulse var(--cycle) ease-out both infinite !important;
+    animation-delay: var(--d) !important;
+  }
+  .process-spot {
+    animation: process-spot var(--cycle) ease both infinite !important;
+    animation-delay: var(--d) !important;
   }
 }

@@ -8,8 +8,8 @@ export function PaymentToInvoice({ visual }: { visual: PaymentToInvoiceVisual })
 
   return (
     <div className="relative sm:min-h-[330px]">
-      {/* Payment notification */}
-      <SceneCard className="relative w-[240px] p-4 sm:absolute sm:top-0 sm:left-0">
+      {/* Payment notification (not on phones: the paid invoice tells the story on its own) */}
+      <SceneCard className="relative hidden w-[240px] p-4 sm:absolute sm:top-0 sm:left-0 sm:block">
         <div className="flex items-center gap-2.5">
           <span className="grid size-8 place-items-center rounded-full bg-(--tone)/15 text-(--tone)">
             <Landmark size={15} />
@@ -30,7 +30,7 @@ export function PaymentToInvoice({ visual }: { visual: PaymentToInvoiceVisual })
       </SceneCard>
 
       {/* The invoice it became: a light "paper" document for contrast */}
-      <div className="relative z-10 mt-[-20px] ml-auto w-[min(100%,300px)] rounded-2xl bg-fg p-5 text-ink shadow-[0_28px_60px_-24px_rgb(0_0_0/0.9)] sm:absolute sm:top-12 sm:right-0 sm:mt-0">
+      <div className="relative z-10 mx-auto w-[min(100%,300px)] rounded-2xl bg-fg p-5 text-ink shadow-[0_28px_60px_-24px_rgb(0_0_0/0.9)] sm:absolute sm:top-12 sm:right-0">
         <div className="flex items-start justify-between">
           <div>
             <p className="font-mono text-[10px] tracking-[0.14em] text-ink/50 uppercase">Invoice</p>

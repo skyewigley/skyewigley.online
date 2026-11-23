@@ -7,7 +7,7 @@ export function CommunityHub({ visual }: { visual: CommunityHubVisual }) {
   return (
     <div className="relative">
       {/* Trending posts */}
-      <SceneCard className="p-4 pb-14">
+      <SceneCard className="p-4 sm:pb-14">
         <div className="flex gap-1.5">
           {visual.tabs.map((tab, index) => (
             <span
@@ -46,8 +46,8 @@ export function CommunityHub({ visual }: { visual: CommunityHubVisual }) {
         </ul>
       </SceneCard>
 
-      {/* User leaderboard, overlapping the bottom of the feed */}
-      <SceneCard className="relative mt-[-40px] mr-3 ml-auto w-[220px] p-4 sm:mr-6">
+      {/* User leaderboard, overlapping the bottom of the feed (not on phones: too busy) */}
+      <SceneCard className="relative mt-[-40px] mr-3 ml-auto hidden w-[220px] p-4 sm:mr-6 sm:block">
         <p className="eyebrow flex items-center gap-1.5 text-[9px]">
           <Trophy size={11} className="text-(--tone)" />
           User leaderboard

@@ -32,7 +32,7 @@ export const servicesHeading = {
   eyebrow: "What I do",
   title: "The kind of work I take on.",
   intro:
-    "Most of my work starts with something no off-the-shelf tool does. I work out what's really needed, build it properly and keep it running. It usually lands in one of these.",
+    "I work out what's really needed, build it and keep it running. Most jobs land in one of these.",
 };
 
 /** Clicking a service card opens the contact page. */
@@ -68,18 +68,18 @@ export const services: Service[] = [
     text: "Full platforms, client sites and secure dashboards, designed and built end to end.",
     category: "web",
     icon: LayoutDashboard,
-    examples: ["AllMinecraft.net", "mc-hacks", "Whop apps"],
+    examples: ["AllMinecraft.net", "MC Mods", "Whop apps"],
   },
   {
     title: "Tools that don't exist yet",
-    text: "When nothing on the market does the job, I make it: browser extensions, dev tools, even a bridge between Minecraft and n8n.",
+    text: "When nothing on the market does the job, I make it: from a tool that shows course owners what their content is missing, to browser extensions and dev tools.",
     category: "tools",
     icon: Wrench,
-    examples: ["AutoClaude", "S-Shot", "Auton8"],
+    examples: ["Course gap finder", "AutoClaude", "S-Shot"],
   },
   {
     title: "Hosting & upkeep",
-    text: "I host what I build on my own servers and keep it updated and online long after launch.",
+    text: "On your servers or mine, kept updated and online long after launch. Some clients have stayed on for years, one since 2017.",
     category: "hosting",
     icon: Server,
     examples: ["KHost", "Discord apps", "Minecraft servers"],
@@ -89,7 +89,7 @@ export const services: Service[] = [
 /** The last card: the open invitation for anything that doesn't fit above. */
 export const otherService = {
   title: "Not on the list?",
-  text: "Some of my best work didn't fit a category. Tell me the problem anyway. If I can't build it, I'll say so.",
+  text: "Some of my best work didn't fit a category. Tell me the problem anyway.",
   linkLabel: "Tell me about it",
   href: "/contact#message",
 };
@@ -164,13 +164,16 @@ export const alsoUsed = {
   label: "Also worked with",
   items: [
     "OpenAI",
-    "Codex",
     "ElevenLabs",
-    "Java",
+    "Fathom",
+    "Revolut",
+    "Stripe",
     "WordPress",
     "MySQL",
-    "Salesforce",
-    "Playwright",
+    "AWS",
+    "GitHub",
+    "Java",
     "Chrome extensions",
+    "& More",
   ],
 };

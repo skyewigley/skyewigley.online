@@ -20,9 +20,9 @@ export const siteConfig = {
   url: env(process.env.NEXT_PUBLIC_SITE_URL, "http://localhost:3000"),
   name,
   initials: env(process.env.NEXT_PUBLIC_INITIALS, initialsOf(name)),
-  role: "AI automation & full-stack engineer",
+  role: "AI automation engineer",
   description:
-    "AI automation and full-stack engineer. n8n workflows, RAG agents, API integrations and self-hosted systems, planned, reviewed and shipped properly.",
+    "AI automation engineer. n8n workflows, RAG agents, API integrations and self-hosted systems, planned, reviewed and shipped properly.",
   email: env(process.env.NEXT_PUBLIC_CONTACT_EMAIL),
   bookingUrl: env(process.env.NEXT_PUBLIC_BOOKING_URL),
   /** WhatsApp and Discord usernames, shown on /contact with a copy button. */

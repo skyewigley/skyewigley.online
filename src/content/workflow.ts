@@ -1,5 +1,5 @@
 /**
- * The example workflows in the hero diagram (desktop/tablet only).
+ * The example workflows in the hero diagram (phones get a vertical version, one row per stage).
  *
  * Each workflow is a small graph on a fixed 940×330 canvas: nodes are placed
  * by their centre (`x`, `y` in px) and `edges` connect them. Data dots travel
@@ -98,18 +98,21 @@ export const workflows: Workflow[] = [
     ],
   },
   {
-    // Fan in, fan out, converge.
-    name: "Finance",
+    // A trigger, fan in, fan out, converge.
+    name: "Finance automation",
     stack: "n8n · Stripe · Revolut · Xero",
     nodes: [
-      { id: "stripe", kind: "pill", x: 100, y: 110, w: 130, icon: icons.card, label: "Stripe", info: "Payments, refunds and payouts, picked up by webhook as they happen." },
-      { id: "revolut", kind: "pill", x: 100, y: 220, w: 130, icon: icons.bank, label: "Revolut", info: "Business account transactions, pulled through the Revolut API." },
-      { id: "match", kind: "hub", x: 370, y: 165, icon: icons.filter, label: "Match & categorise", sublabel: "n8n", info: "Pairs each transaction with its invoice or customer and sorts it into the right category." },
-      { id: "xero", kind: "pill", x: 635, y: 105, w: 150, icon: icons.invoice, label: "Xero invoice", info: "Each matched payment becomes or settles an invoice in Xero." },
-      { id: "sheet", kind: "pill", x: 635, y: 225, w: 150, icon: icons.sheet, label: "Spreadsheet", info: "A running ledger for quick checks and monthly reporting." },
-      { id: "done", kind: "step", x: 850, y: 165, icon: icons.check, label: "Books updated", sublabel: "No manual entry", info: "Invoices and the ledger stay in step automatically. Nothing is typed in by hand." },
+      { id: "trigger", kind: "step", x: 75, y: 165, icon: icons.clock, label: "New payment", sublabel: "n8n", info: "n8n picks up each payment as it lands, so nothing waits on a manual export." },
+      { id: "stripe", kind: "pill", x: 245, y: 110, w: 130, icon: icons.card, label: "Stripe", info: "Payments, refunds and payouts, picked up by webhook as they happen." },
+      { id: "revolut", kind: "pill", x: 245, y: 220, w: 130, icon: icons.bank, label: "Revolut", info: "Business account transactions, pulled through the Revolut API." },
+      { id: "match", kind: "hub", x: 465, y: 165, icon: icons.filter, label: "Match & categorise", sublabel: "n8n", info: "Pairs each transaction with its invoice or customer and sorts it into the right category." },
+      { id: "xero", kind: "pill", x: 690, y: 105, w: 150, icon: icons.invoice, label: "Xero invoice", info: "Each matched payment becomes or settles an invoice in Xero." },
+      { id: "sheet", kind: "pill", x: 690, y: 225, w: 150, icon: icons.sheet, label: "Spreadsheet", info: "A running ledger for quick checks and monthly reporting." },
+      { id: "done", kind: "step", x: 862, y: 165, icon: icons.check, label: "Books updated", sublabel: "No manual entry", info: "Invoices and the ledger stay in step automatically. Nothing is typed in by hand." },
     ],
     edges: [
+      { from: "trigger", to: "stripe" },
+      { from: "trigger", to: "revolut" },
       { from: "stripe", to: "match" },
       { from: "revolut", to: "match" },
       { from: "match", to: "xero" },
@@ -120,7 +123,7 @@ export const workflows: Workflow[] = [
   },
   {
     // One trigger fans out to every source, then narrows to two outputs.
-    name: "Whop",
+    name: "Community insights",
     stack: "Whop · Discord · n8n · Next.js",
     nodes: [
       { id: "cron", kind: "step", x: 85, y: 165, icon: icons.clock, label: "Scheduled sync", sublabel: "n8n", info: "An n8n schedule that kicks off a sync of every source at set times." },

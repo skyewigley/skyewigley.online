@@ -11,7 +11,7 @@ import { projectsHeading } from "@/content/projects";
 
 const title = `Projects | ${siteConfig.name}`;
 const description =
-  "AI agents, n8n automations, web apps and self-hosted tools built this year: client work, my own products and open source.";
+  "AI agents, n8n automations, web apps and self-hosted tools I've worked on this year: client work, my own products and open source.";
 
 export const metadata: Metadata = {
   title,
@@ -30,7 +30,7 @@ export default function ProjectsPage() {
 
       {/* overflow-x-clip (not hidden) so scroll-driven reveal animations keep working */}
       <main id="top" className="overflow-x-clip">
-        <section id="projects" className="pt-[clamp(56px,8vw,112px)] pb-section">
+        <section id="projects" className="pt-[clamp(56px,8vw,112px)]">
           <Container>
             <div className="reveal">
               <SectionHeading

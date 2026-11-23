@@ -1,5 +1,6 @@
 /*
- * The full project catalogue shown on /projects. Everything here was built in the last year.
+ * The project catalogue shown on /projects: everything here had real work done on it this year,
+ * though some projects started earlier.
  * Client names and data stay private: client work has no link unless the client has agreed.
  */
 import {
@@ -72,9 +73,9 @@ export function projectId(project: Pick<Project, "name">) {
 
 export const projectsHeading = {
   eyebrow: "All projects · 2026",
-  title: "Everything I've shipped this year.",
+  title: "Projects I've worked on this year.",
   intro:
-    "Client work, my own products and open-source tools, all built in the last year. Where client work is confidential, I describe what I built, not who it was for.",
+    "Client work, my own products and open-source tools. Some started years ago, but all of them saw real work this year. Where client work is confidential, I describe my part, not who it was for.",
 };
 
 export const projects: Project[] = [
@@ -198,7 +199,8 @@ export const projects: Project[] = [
     context: "Multiple clients",
     summary: "Custom Whop apps for paid communities, built, hosted and maintained.",
     details:
-      "From simple onboarding flows to Discord account linking and member tracking. Each one is built around how that community runs, and I keep them online and up to date.",
+      "From simple onboarding flows to Discord account linking and member tracking. Each one is built around how that community runs, and I keep them online and up to date on a monthly retainer.",
+    result: "Every client on retainer",
     stack: ["Whop API", "Discord", "Next.js", "PostgreSQL"],
     review: {
       quote: "Onboarding finally runs itself. Quick to fix anything we raised.",
@@ -314,10 +316,11 @@ export const projects: Project[] = [
     name: "Skillslink",
     category: "hosting",
     icon: Server,
-    context: "Client",
+    context: "Client since 2017",
     summary: "WordPress hosting and management, plus n8n automations.",
     details:
       "I run their WordPress site and database, and built n8n automations aimed at the real bottlenecks in their day-to-day operations.",
+    result: "Client since 2017",
     stack: ["WordPress", "MySQL", "n8n"],
     review: {
       quote: "Solid hosting and the automations removed real bottlenecks for us.",
@@ -328,14 +331,14 @@ export const projects: Project[] = [
     link: "private",
   },
   {
-    name: "mc-hacks",
+    name: "MC Mods",
     category: "web",
     icon: Newspaper,
-    context: "Solo build",
-    summary: "A Next.js site and front end for blog posts and gaming content.",
+    context: "Solo build · since 2017",
+    summary: "A Minecraft site for mods, guides and gaming content.",
     details:
-      "Designed, built and hosted the site end to end: a fast, search-friendly front end for articles, guides and gaming content. It runs on my own infrastructure and stays quick under heavy traffic.",
-    result: "2 million+ visitors",
+      "Started on WordPress in 2017 and grew through YouTube and gaming communities. I've since redesigned it and rewritten it from scratch on Next.js: same content, new stack. It runs on my own infrastructure and stays quick under heavy traffic.",
+    result: "2 million+ visitors since 2017",
     stack: ["Next.js", "Docker", "Coolify"],
   },
   {
@@ -345,8 +348,8 @@ export const projects: Project[] = [
     context: "Gaming communities",
     summary: "12 custom Discord apps for gaming communities, including Dead by Daylight groups.",
     details:
-      "Each one built around what that community needed, and all 12 run around the clock on my own infrastructure.",
-    result: "12 apps, self-hosted",
+      "Each one built around what that community needed, and all 12 run around the clock on my own infrastructure. Some communities have kept me on retainer for over three years.",
+    result: "On retainer for 3+ years",
     stack: ["Discord API", "Docker", "Coolify"],
     review: {
       quote: "Exactly what our community needed, and it never goes down.",

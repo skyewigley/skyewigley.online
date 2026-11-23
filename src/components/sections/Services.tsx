@@ -19,9 +19,10 @@ import { toneClass } from "./projects/ProjectCard";
 const toneGlow =
   "pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_15%_0%,color-mix(in_srgb,var(--tone)_10%,transparent),transparent_60%)] opacity-50 transition-opacity duration-500 group-hover:opacity-100";
 
+// Work above supplies the top gap on desktop; on phones Work ends flush, so Services adds its own.
 export function Services() {
   return (
-    <section id="services" className="py-section">
+    <section id="services" className="pb-section max-sm:pt-section">
       <Container>
         <SectionHeading
           eyebrow={servicesHeading.eyebrow}

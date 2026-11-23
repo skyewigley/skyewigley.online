@@ -1,6 +1,7 @@
 import { PillLink } from "@/components/ui/PillLink";
 import type { CaseStudy, Tone } from "@/content/work";
 import { CommunityHub } from "./visuals/CommunityHub";
+import { EmailAssistant } from "./visuals/EmailAssistant";
 import { PaymentToInvoice } from "./visuals/PaymentToInvoice";
 import { StudentSupport } from "./visuals/StudentSupport";
 
@@ -8,6 +9,8 @@ function CaseStudyVisual({ visual }: { visual: CaseStudy["visual"] }) {
   switch (visual.kind) {
     case "student-support":
       return <StudentSupport visual={visual} />;
+    case "email-assistant":
+      return <EmailAssistant visual={visual} />;
     case "payment-to-invoice":
       return <PaymentToInvoice visual={visual} />;
     case "community-hub":

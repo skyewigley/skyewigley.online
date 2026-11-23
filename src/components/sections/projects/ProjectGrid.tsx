@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type PointerEvent } from "react";
+import { useEffect, useRef, useState, type MouseEvent, type PointerEvent } from "react";
 import { projectId, projects } from "@/content/projects";
 import { ProjectCard } from "./ProjectCard";
 
@@ -25,6 +25,10 @@ function cardOf(target: EventTarget | null) {
  * the held card. One exception: if the cursor was already resting on another card when the page
  * opened, that card is ignored (it stays muted) until the cursor leaves it. So a cursor that just
  * happened to be there never steals the highlight; only a deliberate move to a card does.
+ *
+ * On touch screens there's no hover, and iOS Safari doesn't focus a card on tap, so a tap toggles
+ * the card open through the same held state. Tapping another card, or anywhere outside the
+ * cards, closes it.
  */
 export function ProjectGrid() {
   const [openId, setOpenId] = useState<string | null>(null);
@@ -35,6 +39,8 @@ export function ProjectGrid() {
   /** Last cursor position on screen. Scrolling moves the page under a still cursor and fires
    * pointer events, but the screen position stays the same, so this tells real moves apart. */
   const lastScreen = useRef<{ x: number; y: number } | null>(null);
+  /** The pointer type of the last press, so a click can tell a tap from a mouse click. */
+  const lastPointerType = useRef<string | null>(null);
 
   useEffect(() => {
     const sync = () => {
@@ -59,6 +65,32 @@ export function ProjectGrid() {
 
   const release = () => {
     restingId.current = null;
+    setOpenId(null);
+  };
+
+  // Touch: a tap outside every card closes the one that's open.
+  useEffect(() => {
+    if (!openId) return;
+    const closeOnOutsideTap = (event: globalThis.PointerEvent) => {
+      if (event.pointerType !== "mouse" && !cardOf(event.target)) release();
+    };
+    document.addEventListener("pointerdown", closeOnOutsideTap);
+    return () => document.removeEventListener("pointerdown", closeOnOutsideTap);
+  }, [openId]);
+
+  /** Touch: tapping a card opens it; tapping it again closes it. Links inside still work. */
+  const handleClick = (event: MouseEvent) => {
+    if (lastPointerType.current === "mouse") return;
+    if (event.target instanceof Element && event.target.closest("a")) return;
+    const card = cardOf(event.target);
+    if (!card) return;
+    restingId.current = null;
+    if (openId !== card) {
+      setOpenId(card);
+      return;
+    }
+    // Closing: drop focus too, or focus-within would keep the card open.
+    if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
     setOpenId(null);
   };
 
@@ -111,7 +143,11 @@ export function ProjectGrid() {
       className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,300px),1fr))] gap-5"
       onPointerMove={handlePointerMove}
       onPointerOut={handlePointerOut}
-      onPointerDown={(event) => releaseIfOther(event.target)}
+      onPointerDown={(event) => {
+        lastPointerType.current = event.pointerType;
+        releaseIfOther(event.target);
+      }}
+      onClick={handleClick}
       onFocus={(event) => releaseIfOther(event.target)}
     >
       {projects.map((project) => {

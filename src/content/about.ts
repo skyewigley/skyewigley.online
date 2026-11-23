@@ -14,8 +14,8 @@ export const about = {
   title: "Hi, I'm {firstName}.",
   /** Two short paragraphs. */
   body: [
-    "Laid back, but I like things done properly. I build automations, AI agents and the platforms around them: finance workflows, RAG agents trained on years of business data, and full web apps I host and run myself. Most of it starts as a problem with no off-the-shelf answer.",
-    "I plan the whole system before anything gets built: how it connects, what it affects and how it stays secure. I use Claude Code every day to build faster, but the architecture and the decisions stay mine. Everything is reviewed and tested before it ships, and I keep it running after.",
+    "Easy-going, but I care about getting things right. I build automations, AI agents and the platforms around them: finance workflows, RAG agents trained on years of business data, and full web apps I host and run myself. Most of it starts as a problem with no off-the-shelf answer.",
+    "I plan the whole system before anything gets built: how it connects, what it affects and how it stays secure. I use Claude Code every day to build faster, but the architecture and the decisions stay mine. Everything is reviewed and tested before it ships. And once it's live, I don't disappear.",
   ],
   /**
    * Portrait image path under /public, e.g. "/images/portrait.jpg".
@@ -37,7 +37,7 @@ export type Stat = {
 
 /** Headline numbers, shown under the About body. */
 export const stats: Stat[] = [
-  { icon: History, value: 8, suffix: "+", label: "Years of experience" },
+  { icon: History, text: "2017", label: "Building since" },
   { icon: BrainCircuit, value: 100, suffix: "+", label: "Deployed agents" },
   { icon: Users, text: "1,000s", label: "Of active users" },
 ];
@@ -50,6 +50,6 @@ export const facts: { icon: LucideIcon; label: string; value: string }[] = [
 
 /** Scrollable row of projects under the About text; each links to its card on /projects. */
 export const projectStrip = {
-  title: "Built in the last year",
+  title: "Worked on this year",
   linkLabel: "All projects",
 };

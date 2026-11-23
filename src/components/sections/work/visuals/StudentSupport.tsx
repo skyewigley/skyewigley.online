@@ -15,7 +15,7 @@ export function StudentSupport({ visual }: { visual: StudentSupportVisual }) {
           <Hash size={14} className="text-muted" />
           {visual.channel}
         </div>
-        <div className="space-y-4 p-4 pb-14">
+        <div className="space-y-4 p-4 sm:pb-14">
           <div className="flex gap-3">
             <span className="grid size-8 shrink-0 place-items-center rounded-full bg-raised text-xs font-semibold">
               {question.name.charAt(0)}
@@ -53,8 +53,8 @@ export function StudentSupport({ visual }: { visual: StudentSupportVisual }) {
         </div>
       </SceneCard>
 
-      {/* What the owner sees, overlapping the bottom of the conversation */}
-      <SceneCard className="relative mt-[-36px] mr-3 ml-auto w-[min(280px,90%)] p-4 sm:mr-6">
+      {/* What the owner sees, overlapping the bottom of the conversation (not on phones: too busy) */}
+      <SceneCard className="relative mt-[-36px] hidden mr-3 ml-auto w-[min(280px,90%)] p-4 sm:mr-6 sm:block">
         <p className="eyebrow text-[9px]">{insight.label}</p>
         <p className="mt-1.5 flex items-baseline gap-2">
           <span className="font-display text-2xl font-semibold text-(--tone)">{insight.value}</span>

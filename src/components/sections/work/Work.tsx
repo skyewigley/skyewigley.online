@@ -16,8 +16,9 @@ export function Work() {
           <AllProjectsLink className="shrink-0 self-start md:self-end" />
         </div>
 
-        {/* Mobile: the last visual is full-bleed and sits flush on About, which brings its own top border. */}
-        <div className="mt-[clamp(48px,6vw,80px)] flex flex-col gap-[clamp(56px,7vw,92px)] max-sm:[&>article:last-child>figure]:border-b-0">
+        {/* Mobile: a full-bleed rule separates the intro from the first project, and the last visual
+            is full-bleed and sits flush on Services. */}
+        <div className="mt-[clamp(48px,6vw,80px)] flex flex-col gap-[clamp(56px,7vw,92px)] max-sm:-mx-5 max-sm:mt-10 max-sm:border-t max-sm:border-raised max-sm:px-5 max-sm:pt-10">
           {caseStudies.map((study, index) => (
             <CaseStudyRow key={study.name} study={study} flip={index % 2 === 1} />
           ))}
