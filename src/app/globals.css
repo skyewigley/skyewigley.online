@@ -1,26 +1,324 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ==========================================================================
+   Design tokens — the single source of truth for colour, type and spacing.
+   Every token here becomes a Tailwind utility, e.g.
+   --color-accent  -> bg-accent / text-accent / border-accent
+   --text-h2       -> text-h2
+   --spacing-section -> py-section
+   ========================================================================== */
+@theme {
+  /* Colour */
+  --color-ink: #191919; /* page background */
+  --color-deep: #121212; /* sunken sections (About) */
+  --color-surface: #242424; /* panels, alternate sections */
+  --color-raised: #353535; /* chips, borders, secondary buttons */
+  --color-edge: #464646; /* strong borders, connectors, dim text */
+  --color-fg: #fafafa; /* primary text */
+  --color-muted: #b3b3b3; /* secondary text */
+  --color-accent: #00d6b4; /* brand accent */
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  /* Type scale (fluid) */
+  --text-label: 12px;
+  --text-label--letter-spacing: 0.1em;
+  --text-lead: clamp(16px, 1.5vw, 19px);
+  --text-display: clamp(40px, 6.6vw, 92px);
+  --text-display--line-height: 1.02;
+  --text-display--letter-spacing: -0.045em;
+  --text-cta: clamp(34px, 5.4vw, 76px);
+  --text-cta--line-height: 1.02;
+  --text-cta--letter-spacing: -0.045em;
+  --text-h2: clamp(32px, 4.4vw, 62px);
+  --text-h2--line-height: 1.05;
+  --text-h2--letter-spacing: -0.035em;
+  --text-h3: clamp(28px, 3.2vw, 44px);
+  --text-h3--line-height: 1.08;
+  --text-h3--letter-spacing: -0.03em;
+  --text-metric: clamp(40px, 4.4vw, 64px);
+  --text-metric--line-height: 1;
+  --text-metric--letter-spacing: -0.04em;
+  --text-stat: clamp(30px, 3.6vw, 52px);
+  --text-stat--line-height: 1;
+  --text-stat--letter-spacing: -0.03em;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  /* Layout */
+  --container-page: 1200px;
+  --spacing-section: clamp(72px, 9vw, 128px);
+  --spacing-gutter: clamp(20px, 4vw, 56px);
+  --radius-panel: 28px;
+  --radius-card: 20px;
+
+  /* Motion */
+  --animate-fade-up: fade-up 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  --animate-fade-in: fade-in 0.5s ease both;
+  --animate-pulse-ring: pulse-ring 2.2s ease-out infinite;
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+  }
+  @keyframes pulse-ring {
+    0% {
+      box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-accent) 60%, transparent);
+    }
+    100% {
+      box-shadow: 0 0 0 12px transparent;
+    }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Per-project tones in Selected work and per-category tones on /projects. Each sets --tone from one of these.
+   `static` because they're only referenced through var(), which Tailwind can't see. */
+@theme static {
+  --color-tone-teal: #00d6b4;
+  --color-tone-amber: #f2b84b;
+  --color-tone-violet: #a78bfa;
+  --color-tone-sky: #60a5fa;
+  --color-tone-rose: #fb7185;
+}
+
+/* Fonts are loaded by next/font in src/app/layout.tsx as CSS variables. */
+@theme inline {
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+  --font-display: var(--font-inter-tight), var(--font-inter), sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+}
+
+/* ==========================================================================
+   Custom variants
+   ========================================================================== */
+/* Project cards: hover that's ignored while another card is held open (data-muted), so a
+   cursor resting on a different card doesn't open two at once. `card-hover` styles children of
+   the .group card; `card-hover-self` styles the card itself. */
+@custom-variant card-hover {
+  @media (hover: hover) {
+    &:where(.group:not([data-muted]):hover *) {
+      @slot;
+    }
+  }
+}
+@custom-variant card-hover-self {
+  @media (hover: hover) {
+    &:not([data-muted]):hover {
+      @slot;
+    }
+  }
+}
+
+/* ==========================================================================
+   Reusable utilities
+   ========================================================================== */
+
+/* Small mono uppercase label used for eyebrows, meta and captions. */
+@utility eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--text-label);
+  letter-spacing: var(--text-label--letter-spacing);
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+/* Dotted grid background used on panels and video placeholders. */
+@utility dot-grid {
+  background-image: radial-gradient(var(--color-raised) 1.2px, transparent 1.2px);
+  background-size: 22px 22px;
+}
+
+/* Fine film-grain noise, used as a texture overlay (set opacity where used). */
+@utility grain {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 1 0 0 0 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+}
+
+/* Staggered delays for the hero entrance animation. */
+@utility delay-step-* {
+  animation-delay: calc(--value(integer) * 0.14s - 0.09s);
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+@layer base {
+  body {
+    background: var(--color-ink);
+    color: var(--color-fg);
+  }
+  a:focus-visible,
+  button:focus-visible,
+  [tabindex]:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 4px;
+  }
+  section[id] {
+    scroll-margin-top: 16px;
+  }
+}
+
+/* ==========================================================================
+   Scroll-driven and looping animations (need keyframes + custom properties,
+   so they live here rather than in utility classes).
+   ========================================================================== */
+@layer components {
+  /* Fade/rise into view while scrolling. No-op in browsers without
+     scroll-driven animation support, so content is always visible. */
+  @supports (animation-timeline: view()) {
+    .reveal {
+      animation: reveal-rise linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 40%;
+    }
+  }
+
+  /* Workflow diagram: small data packets ride each connector (offset-path),
+     and nodes light in turn. Elements set --delay inline to fire in sequence;
+     the canvas sets --cycle, one full pass plus a short hold. */
+  .flow-packet {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 6px;
+    height: 6px;
+    border-radius: 9999px;
+    background: var(--color-accent);
+    box-shadow: 0 0 8px color-mix(in srgb, var(--color-accent) 55%, transparent);
+    opacity: 0;
+    offset-rotate: 0deg;
+    animation: flow-packet var(--cycle) ease-in-out infinite;
+    animation-delay: var(--delay);
+  }
+  /* Invisible metronome: its iteration event marks the end of each pass, so
+     the diagram only rotates between passes, never mid-animation. */
+  .flow-clock {
+    position: absolute;
+    animation: flow-clock var(--cycle) linear infinite;
+  }
+  .flow-node {
+    transition: transform 0.3s;
+    animation: flow-node-on var(--cycle) ease infinite;
+    animation-delay: var(--delay);
+  }
+  .flow-node:hover {
+    transform: translateY(-4px);
+  }
+  /* About: two pools of light drift slowly on their own; the layer they sit in eases against
+     the cursor (parallax) instead of snapping. */
+  .about-light {
+    transition: translate 1.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .about-drift {
+    animation: about-drift 26s ease-in-out infinite alternate;
+  }
+  .about-drift-alt {
+    animation: about-drift 32s ease-in-out infinite alternate-reverse;
+  }
+  /* About: the project row. Moves by one copy of the list (-50%), so the loop is seamless. */
+  .project-marquee {
+    animation: project-marquee 90s linear infinite;
+  }
+}
+
+@keyframes reveal-rise {
+  from {
+    opacity: 0;
+    transform: translateY(32px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes flow-packet {
+  0% {
+    offset-distance: 0%;
+    opacity: 0;
+  }
+  3% {
+    opacity: 0.9;
+  }
+  15% {
+    opacity: 0.9;
+  }
+  18%,
+  100% {
+    offset-distance: 100%;
+    opacity: 0;
+  }
+}
+@keyframes project-marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+@keyframes about-drift {
+  to {
+    transform: translate(-6%, 8%) scale(1.12);
+  }
+}
+@keyframes flow-clock {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes flow-node-on {
+  0% {
+    border-color: var(--color-edge);
+    box-shadow: 0 0 0 0 transparent;
+  }
+  3%,
+  13% {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 6px color-mix(in srgb, var(--color-accent) 16%, transparent);
+  }
+  18%,
+  100% {
+    border-color: var(--color-edge);
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  /* The workflow diagram's small, contained motion stays on: it's the point of
+     the diagram, and nothing large moves. Specific selectors beat the * reset. */
+  .flow-node {
+    animation: flow-node-on var(--cycle) ease infinite !important;
+    animation-delay: var(--delay) !important;
+  }
+  .flow-packet {
+    animation: flow-packet var(--cycle) ease-in-out infinite !important;
+    animation-delay: var(--delay) !important;
+  }
+  .flow-clock {
+    animation: flow-clock var(--cycle) linear infinite !important;
+  }
+  /* The About light is faint and slow, so it stays on too. */
+  .about-light {
+    transition: translate 1.8s cubic-bezier(0.2, 0.7, 0.2, 1) !important;
+  }
+  .about-drift {
+    animation: about-drift 26s ease-in-out infinite alternate !important;
+  }
+  .about-drift-alt {
+    animation: about-drift 32s ease-in-out infinite alternate-reverse !important;
+  }
+  /* The project row is a slow, constant drift, so it stays on too. */
+  .project-marquee {
+    animation: project-marquee 90s linear infinite !important;
+  }
 }

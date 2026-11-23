@@ -1,0 +1,32 @@
+# Production deploy for Coolify (build pack: Docker Compose).
+#
+# Coolify builds the Dockerfile, then routes your domain to nginx on port 80
+# through its own proxy, which also handles HTTPS. No ports are published here.
+#
+# SERVICE_FQDN_WEB_80 / SERVICE_URL_WEB are Coolify magic variables: Coolify
+# fills them from the domain you set on the "web" service.
+#
+# Everything else shows up in Coolify's Environment Variables tab. These are
+# PUBLIC values baked into the static HTML at build time, never secrets.
+services:
+  web:
+    build:
+      context: .
+      args:
+        NEXT_PUBLIC_SITE_URL: ${SERVICE_URL_WEB}
+        NEXT_PUBLIC_NAME: ${NEXT_PUBLIC_NAME}
+        NEXT_PUBLIC_INITIALS: ${NEXT_PUBLIC_INITIALS:-}
+        NEXT_PUBLIC_CONTACT_EMAIL: ${NEXT_PUBLIC_CONTACT_EMAIL:-}
+        NEXT_PUBLIC_BOOKING_URL: ${NEXT_PUBLIC_BOOKING_URL:-}
+        NEXT_PUBLIC_INTRO_VIDEO_ID: ${NEXT_PUBLIC_INTRO_VIDEO_ID:-}
+        NEXT_PUBLIC_LINKEDIN_URL: ${NEXT_PUBLIC_LINKEDIN_URL:-}
+        NEXT_PUBLIC_GITHUB_URL: ${NEXT_PUBLIC_GITHUB_URL:-}
+        NEXT_PUBLIC_YOUTUBE_URL: ${NEXT_PUBLIC_YOUTUBE_URL:-}
+        NEXT_PUBLIC_INSTAGRAM_URL: ${NEXT_PUBLIC_INSTAGRAM_URL:-}
+        NEXT_PUBLIC_UPWORK_URL: ${NEXT_PUBLIC_UPWORK_URL:-}
+        NEXT_PUBLIC_WHATSAPP: ${NEXT_PUBLIC_WHATSAPP:-}
+        NEXT_PUBLIC_DISCORD: ${NEXT_PUBLIC_DISCORD:-}
+        NEXT_PUBLIC_CONTACT_WEBHOOK_URL: ${NEXT_PUBLIC_CONTACT_WEBHOOK_URL:-}
+    environment:
+      - SERVICE_FQDN_WEB_80
+    restart: unless-stopped
