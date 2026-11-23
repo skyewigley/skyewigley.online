@@ -29,6 +29,7 @@ export function WorkflowStack({
 }) {
   const rows: FlowNode[][] = [];
   for (const node of flow.nodes) (rows[stageOf.get(node.id)!] ??= []).push(node);
+  const steps = toSteps(rows, stageOf, flow);
 
   const lit = (stage: number) => (active ? delay(stage * stageGap) : undefined);
   const animated = active ? "flow-node" : "";
@@ -56,64 +57,50 @@ export function WorkflowStack({
       </p>
 
       <ol className="mt-7 mb-7">
-        {rows.map((row, stage) => {
-          const last = stage === rows.length - 1;
-          const single = row.length === 1 ? row[0]! : null;
+        {steps.map((step, index) => {
+          const last = index === steps.length - 1;
           return (
             <li
-              key={stage}
-              className={`grid grid-cols-[44px_1fr] gap-x-4 ${enter(stage + 1).className}`}
-              style={enter(stage + 1).style}
+              key={step.key}
+              className={`grid grid-cols-[44px_1fr] gap-x-4 ${enter(index + 1).className}`}
+              style={enter(index + 1).style}
             >
               {/* Rail: the step marker, then a segment down to the next step */}
               <div className="flex flex-col items-center">
-                {single ? (
-                  <span
-                    className={`${animated} grid size-11 shrink-0 place-items-center rounded-card border border-edge bg-raised ${
-                      single.kind === "hub" ? "text-accent" : ""
-                    }`}
-                    style={lit(stage)}
-                  >
-                    <LineIcon path={single.icon} size={20} />
-                  </span>
-                ) : (
-                  <span className="grid h-11 shrink-0 place-items-center">
-                    <span
-                      className={`${animated} block size-3 rounded-full border border-edge bg-raised`}
-                      style={lit(stage)}
-                    />
-                  </span>
-                )}
+                <span
+                  className={`${animated} grid size-11 shrink-0 place-items-center rounded-card border border-edge bg-raised ${
+                    step.hub ? "text-accent" : ""
+                  }`}
+                  style={lit(step.stage)}
+                >
+                  <LineIcon path={step.icon} size={20} />
+                </span>
                 {!last && (
                   <span aria-hidden="true" className="relative min-h-5 w-px flex-1 bg-edge">
                     {active && (
-                      <span className="flow-rail" style={delay(stage * stageGap + 0.15)} />
+                      <span className="flow-rail" style={delay(step.stage * stageGap + 0.15)} />
                     )}
                   </span>
                 )}
               </div>
 
-              <div className={last ? "" : "pb-5"}>
-                {single ? (
-                  <div className="flex min-h-11 flex-col justify-center">
-                    <p className="font-medium">{single.label}</p>
-                    {single.sublabel && (
-                      <p className="eyebrow mt-0.5 text-[10px]">{single.sublabel}</p>
-                    )}
-                  </div>
-                ) : (
-                  <ul className="flex min-h-11 flex-wrap items-center gap-2">
-                    {row.map((node) => (
+              {/* Every step reads the same: a name, then one quieter line under it */}
+              <div className={`flex min-h-11 flex-col justify-center ${last ? "" : "pb-5"}`}>
+                <p className="font-medium">{step.title}</p>
+                {step.tools ? (
+                  <ul className="mt-2 flex flex-wrap gap-1.5">
+                    {step.tools.map((tool) => (
                       <li
-                        key={node.id}
-                        className={`${animated} inline-flex min-h-9 items-center gap-2 rounded-full border border-edge bg-raised px-3 text-[13px] font-medium`}
-                        style={lit(stage)}
+                        key={tool.id}
+                        className="inline-flex h-7 items-center gap-1.5 rounded-full border border-edge px-2.5 text-[12px] text-fg/80"
                       >
-                        <LineIcon path={node.icon} size={14} className="shrink-0 text-muted" />
-                        {node.label}
+                        <LineIcon path={tool.icon} size={12} className="shrink-0 text-muted" />
+                        {tool.label}
                       </li>
                     ))}
                   </ul>
+                ) : (
+                  step.caption && <p className="eyebrow mt-0.5 text-[10px]">{step.caption}</p>
                 )}
               </div>
             </li>
@@ -125,8 +112,8 @@ export function WorkflowStack({
       <div className={`mt-auto border-t pt-5 ${active ? "border-raised" : "border-transparent"}`}>
         <p className={`eyebrow text-[10px] ${fixed}`}>Built with</p>
         <ul
-          className={`mt-2.5 flex flex-wrap gap-1.5 ${enter(rows.length + 1).className}`}
-          style={enter(rows.length + 1).style}
+          className={`mt-2.5 flex flex-wrap gap-1.5 ${enter(steps.length + 1).className}`}
+          style={enter(steps.length + 1).style}
         >
           {flow.stack.split(" · ").map((tool) => (
             <li
@@ -140,4 +127,67 @@ export function WorkflowStack({
       </div>
     </div>
   );
+}
+
+type Step = {
+  key: string;
+  stage: number;
+  icon: string;
+  title: string;
+  /** Eyebrow under the title (a step's tool, or whether a lone pill is an input or output). */
+  caption?: string;
+  /** Several sources or outputs, listed as small tags under the title. */
+  tools?: FlowNode[];
+  hub?: boolean;
+};
+
+const groupIcons = {
+  input: "M4 13h4l1.5 3h5l1.5-3h4M4 13l2-8h12l2 8v6H4z",
+  output: "M4 12l16-8-6 16-2.5-6.5z",
+};
+
+/**
+ * Turns each stage into rail steps that all share one shape: icon tile, title, one line under it.
+ * Processing steps keep their own label; pills in a stage become a single "Sources" or "Outputs"
+ * step (depending on which side of the hub they sit) with the pills as tags. A lone pill keeps
+ * its label and gets "Input"/"Output" as its caption.
+ */
+function toSteps(rows: FlowNode[][], stageOf: Map<string, number>, flow: Workflow): Step[] {
+  const hub = flow.nodes.find((node) => node.kind === "hub");
+  const hubStage = hub ? stageOf.get(hub.id)! : rows.length;
+
+  return rows.flatMap((row, stage) => {
+    const input = stage < hubStage;
+    const pills = row.filter((node) => node.kind === "pill");
+    const steps: Step[] = row
+      .filter((node) => node.kind !== "pill")
+      .map((node) => ({
+        key: node.id,
+        stage,
+        icon: node.icon,
+        title: node.label,
+        caption: node.sublabel,
+        hub: node.kind === "hub",
+      }));
+
+    if (pills.length === 1) {
+      const pill = pills[0]!;
+      steps.push({
+        key: pill.id,
+        stage,
+        icon: pill.icon,
+        title: pill.label,
+        caption: input ? "Input" : "Output",
+      });
+    } else if (pills.length > 1) {
+      steps.push({
+        key: `group-${stage}`,
+        stage,
+        icon: input ? groupIcons.input : groupIcons.output,
+        title: input ? "Sources" : "Outputs",
+        tools: pills,
+      });
+    }
+    return steps;
+  });
 }
