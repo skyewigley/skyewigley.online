@@ -29,16 +29,29 @@ const toneClass: Record<Tone, string> = {
 const toneGlow =
   "bg-[radial-gradient(ellipse_at_65%_35%,color-mix(in_srgb,var(--tone)_13%,transparent),transparent_65%)]";
 
+/** Phones: a stronger, taller glow spanning the whole project panel (copy + visual). */
+const toneGlowPhone =
+  "bg-[radial-gradient(ellipse_90%_60%_at_70%_45%,color-mix(in_srgb,var(--tone)_15%,transparent),transparent_75%)]";
+
 /** One project: compact copy on one side, a layered visual scene on the other. Alternates sides. */
 export function CaseStudyRow({ study, flip }: { study: CaseStudy; flip: boolean }) {
   return (
     <article
-      className={`${toneClass[study.tone]} relative grid grid-cols-1 items-center gap-[clamp(28px,4vw,64px)] ${
+      className={`${toneClass[study.tone]} relative grid grid-cols-1 items-center gap-[clamp(28px,4vw,64px)] group/row max-sm:-mx-5 max-sm:px-5 max-sm:pt-12 ${
         flip
           ? "lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]"
           : "lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]"
       }`}
     >
+      {/* Phones: one full-bleed panel behind both the copy and the visual, so each project reads as a single unit.
+          Panels stack flush, so each draws only its top rule (plus a bottom one on the last) to avoid doubled lines. */}
+      <div
+        aria-hidden="true"
+        className="reveal dot-grid pointer-events-none absolute inset-0 border-t border-raised bg-surface group-last/row:border-b sm:hidden"
+      >
+        <div className={`absolute inset-0 ${toneGlowPhone}`} />
+      </div>
+
       {/* Desktop: the visual's dot grid carries on behind the copy, fading out toward its far edge.
           Anchored to the same outer edge and vertical centre as the figure's grid so the dots line up. */}
       <div
@@ -71,7 +84,8 @@ export function CaseStudyRow({ study, flip }: { study: CaseStudy; flip: boolean 
           ))}
         </ul>
 
-        <div className="mt-6 border-t border-raised pt-5">
+        {/* Phones skip the "What I built" pills to keep each project short */}
+        <div className="mt-6 border-t border-raised pt-5 max-sm:hidden">
           <p className="eyebrow text-[11px]">What I built</p>
           <ul className="mt-3 flex flex-wrap gap-2" aria-label="What I built">
             {study.built.map(({ icon: Icon, label }) => (
@@ -96,14 +110,15 @@ export function CaseStudyRow({ study, flip }: { study: CaseStudy; flip: boolean 
       </div>
 
       <figure
-        className={`reveal dot-grid relative -mx-5 overflow-hidden border-y border-raised bg-surface px-5 pt-8 pb-14 sm:mx-0 sm:rounded-card sm:border sm:px-[clamp(24px,3.5vw,44px)] sm:pt-[clamp(24px,3.5vw,44px)] lg:overflow-visible lg:border-0 lg:bg-transparent lg:bg-none ${
+        className={`reveal relative -mx-5 overflow-hidden px-5 pt-2 pb-16 sm:pb-14 sm:dot-grid sm:mx-0 sm:rounded-card sm:border sm:border-raised sm:bg-surface sm:px-[clamp(24px,3.5vw,44px)] sm:pt-[clamp(24px,3.5vw,44px)] lg:overflow-visible lg:border-0 lg:bg-transparent lg:bg-none ${
           flip ? "lg:order-1" : ""
         }`}
       >
-        {/* Soft glow in the project's tone behind the cards (mobile/tablet; desktop has it inside the fading panel) */}
+        {/* Soft glow in the project's tone behind the cards (tablet only; phones have it on the full panel,
+            desktop inside the fading panel) */}
         <div
           aria-hidden="true"
-          className={`pointer-events-none absolute inset-0 lg:hidden ${toneGlow}`}
+          className={`pointer-events-none absolute inset-0 hidden sm:block lg:hidden ${toneGlow}`}
         />
 
         {/* Desktop: the panel itself fades out toward the copy, with a shadow that follows the fade.

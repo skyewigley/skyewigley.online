@@ -2,6 +2,7 @@ import {
   Atom,
   AudioLines,
   Bot,
+  Braces,
   BrainCircuit,
   Cable,
   Cloud,
@@ -153,6 +154,7 @@ export const stack: StackGroup[] = [
     items: [
       { label: "Next.js", icon: Layers },
       { label: "React", icon: Atom },
+      { label: "TypeScript", icon: Braces },
       { label: "Tailwind CSS", icon: Palette },
       { label: "Auth & dashboards", icon: ShieldCheck },
     ],

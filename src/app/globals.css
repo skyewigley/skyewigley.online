@@ -156,6 +156,14 @@
   background-size: 640px 640px;
 }
 
+/* Hides the scrollbar on a scroll container that has its own indicator (Carousel's dots). */
+@utility scrollbar-none {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 /* Staggered delays for the hero entrance animation. */
 @utility delay-step-* {
   animation-delay: calc(--value(integer) * 0.14s - 0.09s);
@@ -192,6 +200,18 @@
       animation: reveal-rise linear both;
       animation-timeline: view();
       animation-range: entry 0% entry 40%;
+    }
+    /* A phone carousel scrolls sideways, so its items would track the wrong scroller. The
+       carousel as a whole reveals instead (see Carousel). */
+    @media (width < 40rem) {
+      [data-carousel] {
+        animation: reveal-rise linear both;
+        animation-timeline: view();
+        animation-range: entry 0% entry 40%;
+      }
+      [data-carousel] > .reveal {
+        animation: none;
+      }
     }
   }
 

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight, MessageCircleQuestion } from "lucide-react";
 import { Container } from "@/components/ui/Container";
+import { Carousel } from "@/components/ui/Carousel";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { projectId, projects } from "@/content/projects";
 import {
@@ -20,9 +21,10 @@ const toneGlow =
   "pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_15%_0%,color-mix(in_srgb,var(--tone)_10%,transparent),transparent_60%)] opacity-50 transition-opacity duration-500 group-hover:opacity-100";
 
 // Work above supplies the top gap on desktop; on phones Work ends flush, so Services adds its own.
+// On phones the stack panel ends the section flush, so Process supplies the gap below instead.
 export function Services() {
   return (
-    <section id="services" className="pb-section max-sm:pt-section">
+    <section id="services" className="pb-section max-sm:pt-section max-sm:pb-0">
       <Container>
         <SectionHeading
           eyebrow={servicesHeading.eyebrow}
@@ -31,15 +33,21 @@ export function Services() {
         />
         <p className="reveal mt-6 max-w-[600px] text-muted">{servicesHeading.intro}</p>
 
-        <ul className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <Carousel
+          as="ul"
+          itemLabel="Service"
+          className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+        >
           {services.map((service) => (
             <ServiceCard key={service.title} service={service} />
           ))}
           <OtherServiceCard />
-        </ul>
+        </Carousel>
 
-        {/* Stack: heading and intro share one row, then the groups run across the full width. */}
-        <div className="mt-[clamp(72px,9vw,128px)]">
+        {/* Stack: heading and intro share one row, then the groups run across the full width.
+            Phones: a full-bleed surface panel (no dots) that sits flush on How I work,
+            so it reads as its own block between Services and Process. */}
+        <div className="mt-[clamp(72px,9vw,128px)] max-sm:-mx-5 max-sm:border-y max-sm:border-raised max-sm:bg-surface max-sm:px-5 max-sm:py-12">
           <div className="reveal grid grid-cols-1 items-end gap-x-[clamp(32px,5vw,72px)] gap-y-4 lg:grid-cols-2">
             <div>
               <p className="eyebrow">{stackHeading.eyebrow}</p>
@@ -50,7 +58,12 @@ export function Services() {
             <p className="max-w-[520px] text-muted lg:justify-self-end">{stackHeading.intro}</p>
           </div>
 
-          <dl className="mt-10 grid grid-cols-1 gap-x-8 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
+          <Carousel
+            as="dl"
+            itemLabel="Group"
+            autoplay={4}
+            className="mt-10 grid grid-cols-1 gap-x-8 gap-y-8 sm:grid-cols-2 lg:grid-cols-4"
+          >
             {stack.map(({ label, category, icon: Icon, items }) => (
               <div
                 key={label}
@@ -85,7 +98,7 @@ export function Services() {
                 </dd>
               </div>
             ))}
-          </dl>
+          </Carousel>
 
           <div className="reveal mt-8 flex flex-col gap-2 border-t border-raised pt-6 sm:flex-row sm:items-baseline sm:gap-6">
             <p className="eyebrow shrink-0">{alsoUsed.label}</p>
@@ -150,10 +163,10 @@ function ServiceCard({ service }: { service: Service }) {
   );
 }
 
-/** The open invitation: same shape as the service cards, dashed and in the brand accent. */
+/** The open invitation: same shape as the service cards, dashed and in the brand accent. The whole card links to the contact form. */
 function OtherServiceCard() {
   return (
-    <li className="reveal group relative isolate flex flex-col overflow-hidden rounded-card border border-dashed border-edge p-6 transition-colors duration-300 [--tone:var(--color-accent)] hover:border-accent">
+    <li className="reveal group relative isolate flex flex-col overflow-hidden rounded-card border border-dashed border-edge p-6 transition-colors duration-300 [--tone:var(--color-accent)] hover:border-accent has-[.card-link:focus-visible]:border-accent">
       <div aria-hidden="true" className={toneGlow} />
       <span className="grid size-11 place-items-center rounded-[12px] bg-[color-mix(in_srgb,var(--tone)_14%,transparent)] text-accent">
         <MessageCircleQuestion size={21} strokeWidth={1.8} aria-hidden="true" />
@@ -165,7 +178,7 @@ function OtherServiceCard() {
       <div className="mt-auto pt-6">
         <a
           href={otherService.href}
-          className="eyebrow inline-flex items-center gap-2 text-[11px] text-fg transition-colors duration-200 hover:text-accent"
+          className="card-link eyebrow inline-flex items-center gap-2 text-[11px] text-fg outline-none transition-colors duration-200 group-hover:text-accent after:absolute after:inset-0 after:content-['']"
         >
           {otherService.linkLabel}
           <ArrowRight

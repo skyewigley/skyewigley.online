@@ -1,4 +1,5 @@
 import type { CSSProperties } from "react";
+import { Carousel } from "@/components/ui/Carousel";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { processHeading, processSteps } from "@/content/process";
@@ -11,11 +12,13 @@ const stepSeconds = 3.5;
 /**
  * How an engagement runs. Four steps on a track: the spotlight moves along it one step at a time,
  * each node lights, its scene builds and the track fills on to the next. Below lg there's no track:
- * the cards stack full width and the spotlit one gets a glint travelling round its border instead.
+ * the cards stack full width (on phones, a swipeable one-at-a-time carousel) and the spotlit one
+ * gets a glint travelling round its border instead.
  */
+// Phones: Services ends flush on its stack panel, so Process adds its own top gap.
 export function Process() {
   return (
-    <section id="process" className="pb-section">
+    <section id="process" className="pb-section max-sm:pt-section">
       <Container>
         <div className="reveal grid grid-cols-1 items-end gap-x-[clamp(32px,5vw,72px)] gap-y-5 lg:grid-cols-2">
           <SectionHeading eyebrow={processHeading.eyebrow} title={processHeading.title} />
@@ -26,7 +29,13 @@ export function Process() {
           className="mt-14"
           style={{ "--cycle": `${stepSeconds * processSteps.length}s` } as CSSProperties}
         >
-          <ol className="grid grid-cols-1 gap-y-10 lg:grid-cols-4 lg:gap-x-8">
+          {/* Phones: one step at a time, swipeable, advancing with the spotlight (step one's glint loop) */}
+          <Carousel
+            as="ol"
+            itemLabel="Step"
+            follow=".process-spot"
+            className="grid grid-cols-1 gap-y-10 lg:grid-cols-4 lg:gap-x-8"
+          >
             {processSteps.map((step, index) => {
               const start = index * stepSeconds;
               const isLast = index === processSteps.length - 1;
@@ -66,7 +75,7 @@ export function Process() {
                 </li>
               );
             })}
-          </ol>
+          </Carousel>
         </PlayInView>
       </Container>
     </section>
