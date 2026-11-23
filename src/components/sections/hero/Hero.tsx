@@ -12,11 +12,12 @@ export function Hero() {
       <Container className="relative pb-section">
         <Navbar />
 
-        <div className="pt-[clamp(56px,8vw,112px)] pb-[clamp(40px,5vw,72px)] text-center">
+        <div className="pt-[clamp(40px,8vw,112px)] pb-[clamp(40px,5vw,72px)] text-center">
           <p className="eyebrow inline-flex animate-fade-up flex-wrap items-center justify-center gap-x-3.5 gap-y-2 delay-step-1">
             <span aria-hidden="true" className="size-2 animate-pulse-ring rounded-full bg-accent" />
-            <span>{hero.availability}</span>
-            <span aria-hidden="true" className="hidden text-edge sm:inline">
+            <span className="hidden sm:inline">{hero.availability}</span>
+            <span className="sm:hidden">{hero.availabilityShort}</span>
+            <span aria-hidden="true" className="text-edge">
               ·
             </span>
             <span>
@@ -24,15 +25,16 @@ export function Hero() {
             </span>
           </p>
 
-          <h1 className="mt-6 animate-fade-up font-display text-display font-semibold delay-step-2">
+          {/* Phones: one balanced block at a smaller size instead of two forced lines that each wrap. */}
+          <h1 className="mt-5 animate-fade-up font-display text-display font-semibold text-balance delay-step-2 max-sm:text-[clamp(32px,9vw,38px)] sm:mt-6">
             {hero.headline.map((line) => (
-              <span key={line} className="block">
-                {line}
+              <span key={line} className="sm:block">
+                {line}{" "}
               </span>
             ))}
           </h1>
 
-          <p className="mx-auto mt-6 max-w-[620px] animate-fade-up text-lead text-muted delay-step-3">
+          <p className="mx-auto mt-5 max-w-[620px] animate-fade-up text-lead text-pretty text-muted delay-step-3 sm:mt-6">
             {hero.intro}
           </p>
 

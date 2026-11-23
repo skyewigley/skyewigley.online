@@ -25,7 +25,8 @@ export function GrainSection({
   id,
   as: Tag = "section",
   children,
-  className = "border-y border-raised py-[clamp(56px,7vw,96px)]",
+  // Phones: About opens straight on its full-bleed portrait (which has its own top border).
+  className = "border-y border-raised py-[clamp(56px,7vw,96px)] max-sm:border-t-0 max-sm:pt-0",
 }: GrainSectionProps) {
   const sectionRef = useRef<HTMLElement & HTMLDivElement>(null);
   const lightRef = useRef<HTMLDivElement>(null);

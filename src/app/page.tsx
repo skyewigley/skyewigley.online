@@ -6,6 +6,7 @@ import { Services } from "@/components/sections/Services";
 import { Videos } from "@/components/sections/Videos";
 import { Work } from "@/components/sections/work/Work";
 import { siteConfig } from "@/config/site";
+import { videosPublished } from "@/content/videos";
 
 // Structured data so search engines understand who the page is about.
 const personJsonLd = {
@@ -30,7 +31,7 @@ export default function HomePage() {
         <Work />
         <About />
         <Services />
-        <Videos />
+        {videosPublished && <Videos />}
         <Contact />
       </main>
       <Footer />

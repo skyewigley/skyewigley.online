@@ -1,3 +1,6 @@
+/** The Content (videos) section and its nav link stay hidden until this is true. */
+export const videosPublished = false;
+
 export type Video = {
   url: string;
   topic: string;
