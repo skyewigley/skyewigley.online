@@ -30,18 +30,14 @@ import {
 /** Sets the card's tone (globals.css). */
 export type ProjectCategory = "ai" | "automation" | "web" | "tools" | "hosting";
 
-/**
- * A client review. Drafts are placeholders written to fill the layout: they only render in local
- * dev (with a "Draft" tag) and never in a production build. Replace the quote with the client's
- * real words, then set `verified: true` to publish it.
- */
+/** A client review. Shown on the live site once `published` is true. */
 export type Review = {
   quote: string;
   /** Role and company type, never a private name without permission. */
   author: string;
   /** Out of 5. */
   rating: number;
-  verified: boolean;
+  published: boolean;
 };
 
 export type Project = {
@@ -107,7 +103,7 @@ export const projects: Project[] = [
       quote: "Payments just show up in Xero now. Saved us hours every week.",
       author: "Founder, digital agency",
       rating: 5,
-      verified: false,
+      published: false,
     },
     link: "private",
   },
@@ -147,7 +143,7 @@ export const projects: Project[] = [
       quote: "Our team finds answers in seconds instead of digging through old emails.",
       author: "Owner, rental company",
       rating: 5,
-      verified: false,
+      published: false,
     },
     link: "private",
   },
@@ -208,7 +204,7 @@ export const projects: Project[] = [
       quote: "Onboarding finally runs itself. Quick to fix anything we raised.",
       author: "Community owner, Whop",
       rating: 5,
-      verified: false,
+      published: false,
     },
     link: "private",
   },
@@ -225,7 +221,7 @@ export const projects: Project[] = [
       quote: "Showed us exactly which lessons needed work. Really useful.",
       author: "Course creator",
       rating: 5,
-      verified: false,
+      published: false,
     },
     link: "private",
   },
@@ -242,7 +238,7 @@ export const projects: Project[] = [
       quote: "We spot students who are struggling before they drop off.",
       author: "Program manager, online course",
       rating: 5,
-      verified: false,
+      published: false,
     },
     link: "private",
   },
@@ -259,7 +255,7 @@ export const projects: Project[] = [
       quote: "Fewer repeat support tickets from week one. Great work.",
       author: "Operations lead, e-commerce",
       rating: 5,
-      verified: false,
+      published: false,
     },
     link: "private",
   },
@@ -276,7 +272,7 @@ export const projects: Project[] = [
       quote: "Sounds natural and handles the common questions well. Very happy.",
       author: "Marketing lead, service business",
       rating: 5,
-      verified: false,
+      published: false,
     },
     link: "private",
   },
@@ -293,7 +289,7 @@ export const projects: Project[] = [
       quote: "Our CRM and tools finally stay in sync. Clear communication throughout.",
       author: "Sales manager, B2B services",
       rating: 5,
-      verified: false,
+      published: false,
     },
     link: "private",
   },
@@ -310,7 +306,7 @@ export const projects: Project[] = [
       quote: "Great site, fast and always up. Easy to work with.",
       author: "Owner, KHost",
       rating: 5,
-      verified: false,
+      published: false,
     },
     link: "private",
   },
@@ -327,7 +323,7 @@ export const projects: Project[] = [
       quote: "Solid hosting and the automations removed real bottlenecks for us.",
       author: "Director, Skillslink",
       rating: 5,
-      verified: false,
+      published: false,
     },
     link: "private",
   },
@@ -356,7 +352,7 @@ export const projects: Project[] = [
       quote: "Exactly what our community needed, and it never goes down.",
       author: "Server admin, gaming community",
       rating: 5,
-      verified: false,
+      published: false,
     },
   },
   {

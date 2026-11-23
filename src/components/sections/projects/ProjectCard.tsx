@@ -1,8 +1,8 @@
 import { ArrowUpRight, Lock, Star, TrendingUp } from "lucide-react";
 import { projectId, type Project, type ProjectCategory } from "@/content/projects";
 
-/** Unverified (placeholder) reviews show while developing locally, never in a production build. */
-const showDraftReviews = process.env.NODE_ENV === "development";
+/** Unpublished reviews still show in local dev, so the layout can be checked. */
+const showUnpublishedReviews = process.env.NODE_ENV === "development";
 
 /** Sets --tone for the card from its category; everything inside colours itself from it. */
 export const toneClass: Record<ProjectCategory, string> = {
@@ -60,7 +60,7 @@ export function ProjectCard({
 }) {
   const { icon: Icon, link } = project;
   const review =
-    project.review && (project.review.verified || showDraftReviews)
+    project.review && (project.review.published || showUnpublishedReviews)
       ? project.review
       : null;
   // With a review, "Confidential" is dropped: the review already shows it was client work.
