@@ -1,3 +1,5 @@
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 import { ImageResponse } from "next/og";
 import { siteConfig } from "@/config/site";
 
@@ -17,7 +19,9 @@ const color = {
   accent: "#00d6b4",
 };
 
-export default function OpengraphImage() {
+export default async function OpengraphImage() {
+  const logo = await readFile(join(process.cwd(), "public/brand/logo.png"));
+  const logoSrc = `data:image/png;base64,${logo.toString("base64")}`;
   const domain = siteConfig.url.replace(/^https?:\/\//, "");
 
   return new ImageResponse(
@@ -44,12 +48,10 @@ export default function OpengraphImage() {
               height: 64,
               borderRadius: 18,
               background: color.accent,
-              color: color.ink,
-              fontSize: 26,
-              fontWeight: 700,
             }}
           >
-            {siteConfig.initials}
+            {/* eslint-disable-next-line @next/next/no-img-element -- Satori only renders <img> */}
+            <img src={logoSrc} alt="" width={46} height={46} />
           </div>
           <div style={{ fontSize: 34, fontWeight: 600 }}>{siteConfig.name}</div>
         </div>

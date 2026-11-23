@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { siteConfig } from "@/config/site";
 import { ArrowPillLink } from "@/components/ui/ArrowPillLink";
@@ -16,9 +17,9 @@ export function Navbar() {
         >
           <span
             aria-hidden="true"
-            className="grid size-[30px] shrink-0 place-items-center rounded-[9px] bg-accent text-xs font-bold text-ink"
+            className="grid size-[30px] shrink-0 place-items-center rounded-[9px] bg-accent"
           >
-            {siteConfig.initials}
+            <Image src="/brand/logo.png" alt="" width={22} height={22} preload />
           </span>
           <span className="truncate">{siteConfig.name}</span>
         </Link>
